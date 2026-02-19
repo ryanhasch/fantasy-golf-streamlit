@@ -1,0 +1,1474 @@
+{
+  "teams": {
+    "Ryan": [
+      "Tyrell Hatton",
+      "Tommy Fleetwood",
+      "Robert MacIntyre",
+      "Hideki Matsuyama",
+      "Maverick McNealy",
+      "Corey Conners",
+      "Brooks Koepka",
+      "Aaron Rai",
+      "Alex Noren",
+      "Kristoffer Reitan",
+      "Rasmus Neergaard-Petersen",
+      "Sami Valimaki",
+      "Johnny Keefer"
+    ],
+    "Cam": [
+      "Bryson Dechambeau",
+      "Ben Griffin",
+      "Russell Henley",
+      "Harris English",
+      "Keegan Bradley",
+      "Kurt Kitayama",
+      "Harry Hall",
+      "Jason Day",
+      "J.T. Poston",
+      "Lucas Glover",
+      "Marco Penge",
+      "Nico Echavarria",
+      "Ryan Fox",
+      "Jacob Bridgeman",
+      "Chris Kirk"
+    ],
+    "James": [
+      "Jon Rahm",
+      "J.J. Spaun",
+      "Ludvig \u00c5berg",
+      "Justin Thomas",
+      "Akshay Bhatia",
+      "Si Woo Kim",
+      "Daniel Berger",
+      "Michael Kim",
+      "Jordan Spieth",
+      "Luke Clanton",
+      "Rico Hoey",
+      "Max Greyserman",
+      "Ryan Gerard"
+    ],
+    "Matt": [
+      "Joaquin Niemann",
+      "Xander Schauffele",
+      "Cameron Young",
+      "Patrick Cantlay",
+      "Shane Lowry",
+      "Denny McCarthy",
+      "Taylor Pendrith",
+      "Rickie Fowler",
+      "Nick Taylor",
+      "Neal Shipley",
+      "Matt McCarty",
+      "Aldrich Potgieter",
+      "Max Homa"
+    ],
+    "Chris": [
+      "Patrick Reed",
+      "Rory McIlroy",
+      "Sepp Straka",
+      "Collin Morikawa",
+      "Brian Harman",
+      "Justin Rose",
+      "Andrew Novak",
+      "Sungjae Im",
+      "Adam Scott",
+      "Min Woo Lee",
+      "Jacob Bridgeman",
+      "Bud Cauley",
+      "Chris Kirk",
+      "Marco Penge",
+      "Ryan Fox"
+    ],
+    "Tim": [
+      "Cameron Smith",
+      "Scottie Scheffler",
+      "Sam Burns",
+      "Viktor Hovland",
+      "Matt Fitzpatrick",
+      "Chris Gotterup",
+      "Rasmus H\u00f8jgaard",
+      "Nicolai H\u00f8jgaard",
+      "Wyndham Clark",
+      "Michael Thorbjornsen",
+      "Jake Knapp",
+      "Will Zalatoris",
+      "Garrick Higgo"
+    ]
+  },
+  "tournaments": {
+    "AT&T Pebble Beach Pro-Am": {
+      "results": {
+        "Collin Morikawa": {
+          "prize": 3600000.0,
+          "status": "scored"
+        },
+        "Sepp Straka": {
+          "prize": 1760000.0,
+          "status": "scored"
+        },
+        "Min Woo Lee": {
+          "prize": 1760000.0,
+          "status": "scored"
+        },
+        "Tommy Fleetwood": {
+          "prize": 877500.0,
+          "status": "scored"
+        },
+        "Scottie Scheffler": {
+          "prize": 877500.0,
+          "status": "scored"
+        },
+        "Sam Burns": {
+          "prize": 690000.0,
+          "status": "scored"
+        },
+        "Akshay Bhatia": {
+          "prize": 690000.0,
+          "status": "scored"
+        },
+        "Jake Knapp": {
+          "prize": 515000.0,
+          "status": "scored"
+        },
+        "Ryo Hisatsune": {
+          "prize": 515000.0,
+          "status": "scored"
+        },
+        "Nico Echavarria": {
+          "prize": 515000.0,
+          "status": "scored"
+        },
+        "Hideki Matsuyama": {
+          "prize": 515000.0,
+          "status": "scored"
+        },
+        "Shane Lowry": {
+          "prize": 515000.0,
+          "status": "scored"
+        },
+        "Jacob Bridgeman": {
+          "prize": 515000.0,
+          "status": "scored"
+        },
+        "Rory McIlroy": {
+          "prize": 342750.0,
+          "status": "scored"
+        },
+        "Matt Fitzpatrick": {
+          "prize": 342750.0,
+          "status": "scored"
+        },
+        "Patrick Cantlay": {
+          "prize": 342750.0,
+          "status": "scored"
+        },
+        "Tom Hoge": {
+          "prize": 342750.0,
+          "status": "scored"
+        },
+        "Tony Finau": {
+          "prize": 292000.0,
+          "status": "scored"
+        },
+        "Brian Harman": {
+          "prize": 235000.0,
+          "status": "scored"
+        },
+        "Rickie Fowler": {
+          "prize": 235000.0,
+          "status": "scored"
+        },
+        "Russell Henley": {
+          "prize": 235000.0,
+          "status": "scored"
+        },
+        "Xander Schauffele": {
+          "prize": 235000.0,
+          "status": "scored"
+        },
+        "Alex Smalley": {
+          "prize": 235000.0,
+          "status": "scored"
+        },
+        "Harry Hall": {
+          "prize": 162000.0,
+          "status": "scored"
+        },
+        "Harris English": {
+          "prize": 162000.0,
+          "status": "scored"
+        },
+        "Jason Day": {
+          "prize": 162000.0,
+          "status": "scored"
+        },
+        "Nick Taylor": {
+          "prize": 162000.0,
+          "status": "scored"
+        },
+        "Ryan Fox": {
+          "prize": 162000.0,
+          "status": "scored"
+        },
+        "Keegan Bradley": {
+          "prize": 125200.0,
+          "status": "scored"
+        },
+        "Alex Noren": {
+          "prize": 125200.0,
+          "status": "scored"
+        },
+        "Jordan Spieth": {
+          "prize": 125200.0,
+          "status": "scored"
+        },
+        "Max McGreevy": {
+          "prize": 125200.0,
+          "status": "scored"
+        },
+        "Maverick McNealy": {
+          "prize": 125200.0,
+          "status": "scored"
+        },
+        "Sami Valimaki": {
+          "prize": 104000.0,
+          "status": "scored"
+        },
+        "Mackenzie Hughes": {
+          "prize": 104000.0,
+          "status": "scored"
+        },
+        "Taylor Pendrith": {
+          "prize": 104000.0,
+          "status": "scored"
+        },
+        "Justin Rose": {
+          "prize": 78375.0,
+          "status": "scored"
+        },
+        "Bud Cauley": {
+          "prize": 78375.0,
+          "status": "scored"
+        },
+        "Ludvig \u00c5berg": {
+          "prize": 78375.0,
+          "status": "scored"
+        },
+        "Max Greyserman": {
+          "prize": 78375.0,
+          "status": "scored"
+        },
+        "Robert MacIntyre": {
+          "prize": 78375.0,
+          "status": "scored"
+        },
+        "Ben Griffin": {
+          "prize": 78375.0,
+          "status": "scored"
+        },
+        "J.T. Poston": {
+          "prize": 78375.0,
+          "status": "scored"
+        },
+        "Chris Gotterup": {
+          "prize": 78375.0,
+          "status": "scored"
+        },
+        "Ryan Gerard": {
+          "prize": 57000.0,
+          "status": "scored"
+        },
+        "Si Woo Kim": {
+          "prize": 57000.0,
+          "status": "scored"
+        },
+        "J.J. Spaun": {
+          "prize": 57000.0,
+          "status": "scored"
+        },
+        "Billy Horschel": {
+          "prize": 49250.0,
+          "status": "scored"
+        },
+        "Andrew Novak": {
+          "prize": 49250.0,
+          "status": "scored"
+        },
+        "Kurt Kitayama": {
+          "prize": 49250.0,
+          "status": "scored"
+        },
+        "Pierceson Coody": {
+          "prize": 49250.0,
+          "status": "scored"
+        },
+        "Chris Kirk": {
+          "prize": 45000.0,
+          "status": "scored"
+        },
+        "Keith Mitchell": {
+          "prize": 45000.0,
+          "status": "scored"
+        },
+        "Patrick Rodgers": {
+          "prize": 45000.0,
+          "status": "scored"
+        },
+        "Denny McCarthy": {
+          "prize": 42000.0,
+          "status": "scored"
+        },
+        "Cameron Young": {
+          "prize": 42000.0,
+          "status": "scored"
+        },
+        "Samuel Stevens": {
+          "prize": 42000.0,
+          "status": "scored"
+        },
+        "Wyndham Clark": {
+          "prize": 39750.0,
+          "status": "scored"
+        },
+        "Viktor Hovland": {
+          "prize": 39750.0,
+          "status": "scored"
+        },
+        "Sahith Theegala": {
+          "prize": 38250.0,
+          "status": "scored"
+        },
+        "Garrick Higgo": {
+          "prize": 38250.0,
+          "status": "scored"
+        },
+        "Steven Fisk": {
+          "prize": 38250.0,
+          "status": "scored"
+        },
+        "Aldrich Potgieter": {
+          "prize": 38250.0,
+          "status": "scored"
+        },
+        "Marco Penge": {
+          "prize": 36500.0,
+          "status": "scored"
+        },
+        "Emiliano Grillo": {
+          "prize": 36500.0,
+          "status": "scored"
+        },
+        "Lucas Glover": {
+          "prize": 36500.0,
+          "status": "scored"
+        },
+        "Stephan Jaeger": {
+          "prize": 35083.33,
+          "status": "scored"
+        },
+        "Richard Hoey": {
+          "prize": 35083.33,
+          "status": "scored"
+        },
+        "Matt McCarty": {
+          "prize": 35083.33,
+          "status": "scored"
+        },
+        "Kevin Yu": {
+          "prize": 34375.0,
+          "status": "scored"
+        },
+        "Corey Conners": {
+          "prize": 34375.0,
+          "status": "scored"
+        },
+        "Michael Kim": {
+          "prize": 34000.0,
+          "status": "scored"
+        },
+        "Matti Schmid": {
+          "prize": 33625.0,
+          "status": "scored"
+        },
+        "Aaron Rai": {
+          "prize": 33625.0,
+          "status": "scored"
+        },
+        "Daniel Berger": {
+          "prize": 33125.0,
+          "status": "scored"
+        },
+        "Joe Highsmith": {
+          "prize": 33125.0,
+          "status": "scored"
+        },
+        "Adam Schenk": {
+          "prize": 32750.0,
+          "status": "scored"
+        },
+        "Brian Campbell": {
+          "prize": 32250.0,
+          "status": "scored"
+        },
+        "Michael Thorbjornsen": {
+          "prize": 32250.0,
+          "status": "scored"
+        },
+        "Jhonattan Vegas": {
+          "prize": 32250.0,
+          "status": "scored"
+        },
+        "Bryson Dechambeau": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Tyrell Hatton": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Max Homa": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Cameron Smith": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Luke Clanton": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Nicolai H\u00f8jgaard": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Kristoffer Reitan": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Jon Rahm": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Adam Scott": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Patrick Reed": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Sungjae Im": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Brooks Koepka": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Neal Shipley": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Rico Hoey": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Rasmus Neergaard-Petersen": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Justin Thomas": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Joaquin Niemann": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Johnny Keefer": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Will Zalatoris": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Rasmus H\u00f8jgaard": {
+          "prize": 0,
+          "status": "not_entered"
+        }
+      }
+    },
+    "WM Phoenix Open": {
+      "results": {
+        "Chris Gotterup": {
+          "prize": 1728000.0,
+          "status": "scored"
+        },
+        "Hideki Matsuyama": {
+          "prize": 1046400.0,
+          "status": "scored"
+        },
+        "Scottie Scheffler": {
+          "prize": 439680.0,
+          "status": "scored"
+        },
+        "Akshay Bhatia": {
+          "prize": 439680.0,
+          "status": "scored"
+        },
+        "Si Woo Kim": {
+          "prize": 439680.0,
+          "status": "scored"
+        },
+        "Michael Thorbjornsen": {
+          "prize": 439680.0,
+          "status": "scored"
+        },
+        "Nicolai H\u00f8jgaard": {
+          "prize": 439680.0,
+          "status": "scored"
+        },
+        "Jake Knapp": {
+          "prize": 300000.0,
+          "status": "scored"
+        },
+        "Matt Fitzpatrick": {
+          "prize": 280800.0,
+          "status": "scored"
+        },
+        "Pierceson Coody": {
+          "prize": 242400.0,
+          "status": "scored"
+        },
+        "Viktor Hovland": {
+          "prize": 242400.0,
+          "status": "scored"
+        },
+        "Ryo Hisatsune": {
+          "prize": 242400.0,
+          "status": "scored"
+        },
+        "Zecheng Dou": {
+          "prize": 188000.0,
+          "status": "scored"
+        },
+        "Kevin Roy": {
+          "prize": 188000.0,
+          "status": "scored"
+        },
+        "Maverick McNealy": {
+          "prize": 188000.0,
+          "status": "scored"
+        },
+        "Daniel Berger": {
+          "prize": 160800.0,
+          "status": "scored"
+        },
+        "Jordan Smith": {
+          "prize": 160800.0,
+          "status": "scored"
+        },
+        "Michael Kim": {
+          "prize": 122720.0,
+          "status": "scored"
+        },
+        "Jacob Bridgeman": {
+          "prize": 122720.0,
+          "status": "scored"
+        },
+        "Rickie Fowler": {
+          "prize": 122720.0,
+          "status": "scored"
+        },
+        "Mac Meissner": {
+          "prize": 122720.0,
+          "status": "scored"
+        },
+        "Sepp Straka": {
+          "prize": 122720.0,
+          "status": "scored"
+        },
+        "Sahith Theegala": {
+          "prize": 122720.0,
+          "status": "scored"
+        },
+        "Ryan Fox": {
+          "prize": 82320.0,
+          "status": "scored"
+        },
+        "Rico Hoey": {
+          "prize": 82320.0,
+          "status": "scored"
+        },
+        "Kurt Kitayama": {
+          "prize": 82320.0,
+          "status": "scored"
+        },
+        "Rasmus H\u00f8jgaard": {
+          "prize": 82320.0,
+          "status": "scored"
+        },
+        "Harris English": {
+          "prize": 62948.57,
+          "status": "scored"
+        },
+        "A.J. Ewart": {
+          "prize": 62948.57,
+          "status": "scored"
+        },
+        "Nick Taylor": {
+          "prize": 62948.57,
+          "status": "scored"
+        },
+        "Ben Griffin": {
+          "prize": 62948.57,
+          "status": "scored"
+        },
+        "Mackenzie Hughes": {
+          "prize": 62948.57,
+          "status": "scored"
+        },
+        "Stephan Jaeger": {
+          "prize": 62948.57,
+          "status": "scored"
+        },
+        "Min Woo Lee": {
+          "prize": 62948.57,
+          "status": "scored"
+        },
+        "Sam Stevens": {
+          "prize": 46800.0,
+          "status": "scored"
+        },
+        "Wyndham Clark": {
+          "prize": 46800.0,
+          "status": "scored"
+        },
+        "Alex Smalley": {
+          "prize": 46800.0,
+          "status": "scored"
+        },
+        "Tom Kim": {
+          "prize": 46800.0,
+          "status": "scored"
+        },
+        "J.T. Poston": {
+          "prize": 46800.0,
+          "status": "scored"
+        },
+        "John Parry": {
+          "prize": 46800.0,
+          "status": "scored"
+        },
+        "Rasmus Neergaard-Petersen": {
+          "prize": 34080.0,
+          "status": "scored"
+        },
+        "Keith Mitchell": {
+          "prize": 34080.0,
+          "status": "scored"
+        },
+        "Cameron Young": {
+          "prize": 34080.0,
+          "status": "scored"
+        },
+        "Johnny Keefer": {
+          "prize": 34080.0,
+          "status": "scored"
+        },
+        "Sami Valimaki": {
+          "prize": 34080.0,
+          "status": "scored"
+        },
+        "Kristoffer Reitan": {
+          "prize": 34080.0,
+          "status": "scored"
+        },
+        "Xander Schauffele": {
+          "prize": 34080.0,
+          "status": "scored"
+        },
+        "Christo Lamprecht": {
+          "prize": 24608.0,
+          "status": "scored"
+        },
+        "Zach Bauchou": {
+          "prize": 24608.0,
+          "status": "scored"
+        },
+        "Max McGreevy": {
+          "prize": 24608.0,
+          "status": "scored"
+        },
+        "Chad Ramey": {
+          "prize": 24608.0,
+          "status": "scored"
+        },
+        "Michael Brennan": {
+          "prize": 24608.0,
+          "status": "scored"
+        },
+        "S.T. Lee": {
+          "prize": 24608.0,
+          "status": "scored"
+        },
+        "S.H. Kim": {
+          "prize": 22272.0,
+          "status": "scored"
+        },
+        "Sudarshan Yellamaraju": {
+          "prize": 22272.0,
+          "status": "scored"
+        },
+        "Joe Highsmith": {
+          "prize": 22272.0,
+          "status": "scored"
+        },
+        "Brian Campbell": {
+          "prize": 22272.0,
+          "status": "scored"
+        },
+        "Kensei Hirata": {
+          "prize": 22272.0,
+          "status": "scored"
+        },
+        "Collin Morikawa": {
+          "prize": 22272.0,
+          "status": "scored"
+        },
+        "Patrick Rodgers": {
+          "prize": 21312.0,
+          "status": "scored"
+        },
+        "John VanDerLaan": {
+          "prize": 21312.0,
+          "status": "scored"
+        },
+        "Takumi Kanaya": {
+          "prize": 21312.0,
+          "status": "scored"
+        },
+        "Adrien Saddier": {
+          "prize": 21312.0,
+          "status": "scored"
+        },
+        "Davis Thompson": {
+          "prize": 20736.0,
+          "status": "scored"
+        },
+        "Gary Woodland": {
+          "prize": 20736.0,
+          "status": "scored"
+        },
+        "Chandler Phillips": {
+          "prize": 20352.0,
+          "status": "scored"
+        },
+        "Max Homa": {
+          "prize": 20352.0,
+          "status": "scored"
+        },
+        "Bud Cauley": {
+          "prize": 19872.0,
+          "status": "scored"
+        },
+        "Hank Lebioda": {
+          "prize": 19872.0,
+          "status": "scored"
+        },
+        "Neal Shipley": {
+          "prize": 19872.0,
+          "status": "scored"
+        },
+        "Keita Nakajima": {
+          "prize": 19488.0,
+          "status": "scored"
+        },
+        "Patton Kizzire": {
+          "prize": 19296.0,
+          "status": "scored"
+        },
+        "Cam Davis": {
+          "prize": 19104.0,
+          "status": "scored"
+        },
+        "Ryan Gerard": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Bryson Dechambeau": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Tyrell Hatton": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Lucas Glover": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Cameron Smith": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Chris Kirk": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Luke Clanton": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Jordan Spieth": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Max Greyserman": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Andrew Novak": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Taylor Pendrith": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "J.J. Spaun": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Garrick Higgo": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Jon Rahm": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Denny McCarthy": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Adam Scott": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Patrick Reed": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Brian Harman": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Sam Burns": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Keegan Bradley": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Marco Penge": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Sungjae Im": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Matt McCarty": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Justin Rose": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Brooks Koepka": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Robert MacIntyre": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Corey Conners": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Aaron Rai": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Patrick Cantlay": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Justin Thomas": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Nico Echavarria": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Joaquin Niemann": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Rory McIlroy": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Tommy Fleetwood": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Ludvig \u00c5berg": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Harry Hall": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Alex Noren": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Will Zalatoris": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Jason Day": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Aldrich Potgieter": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Shane Lowry": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Russell Henley": {
+          "prize": 0,
+          "status": "not_entered"
+        }
+      }
+    },
+    "The American Express": {
+      "results": {
+        "Scottie Scheffler": {
+          "prize": 1656000.0,
+          "status": "scored"
+        },
+        "Jason Day": {
+          "prize": 616400.0,
+          "status": "scored"
+        },
+        "Andrew Putnam": {
+          "prize": 616400.0,
+          "status": "scored"
+        },
+        "Ryan Gerard": {
+          "prize": 616400.0,
+          "status": "scored"
+        },
+        "Matt McCarty": {
+          "prize": 616400.0,
+          "status": "scored"
+        },
+        "Samuel Stevens": {
+          "prize": 322000.0,
+          "status": "scored"
+        },
+        "Si Woo Kim": {
+          "prize": 322000.0,
+          "status": "scored"
+        },
+        "Russell Henley": {
+          "prize": 250700.0,
+          "status": "scored"
+        },
+        "Haotong Li": {
+          "prize": 250700.0,
+          "status": "scored"
+        },
+        "Tom Hoge": {
+          "prize": 250700.0,
+          "status": "scored"
+        },
+        "Austin Smotherman": {
+          "prize": 250700.0,
+          "status": "scored"
+        },
+        "Sahith Theegala": {
+          "prize": 250700.0,
+          "status": "scored"
+        },
+        "Wyndham Clark": {
+          "prize": 169740.0,
+          "status": "scored"
+        },
+        "Zach Bauchou": {
+          "prize": 169740.0,
+          "status": "scored"
+        },
+        "Patrick Cantlay": {
+          "prize": 169740.0,
+          "status": "scored"
+        },
+        "Jacob Bridgeman": {
+          "prize": 169740.0,
+          "status": "scored"
+        },
+        "David Ford": {
+          "prize": 169740.0,
+          "status": "scored"
+        },
+        "Blades Brown": {
+          "prize": 117606.67,
+          "status": "scored"
+        },
+        "Pierceson Coody": {
+          "prize": 117606.67,
+          "status": "scored"
+        },
+        "Rickie Fowler": {
+          "prize": 117606.67,
+          "status": "scored"
+        },
+        "Will Zalatoris": {
+          "prize": 117606.67,
+          "status": "scored"
+        },
+        "S.H. Kim": {
+          "prize": 117606.67,
+          "status": "scored"
+        },
+        "Karl Vilips": {
+          "prize": 117606.67,
+          "status": "scored"
+        },
+        "Ben Griffin": {
+          "prize": 81420.0,
+          "status": "scored"
+        },
+        "Harry Hall": {
+          "prize": 81420.0,
+          "status": "scored"
+        },
+        "Adam Scott": {
+          "prize": 81420.0,
+          "status": "scored"
+        },
+        "Nick Taylor": {
+          "prize": 57918.18,
+          "status": "scored"
+        },
+        "Billy Horschel": {
+          "prize": 57918.18,
+          "status": "scored"
+        },
+        "Harris English": {
+          "prize": 57918.18,
+          "status": "scored"
+        },
+        "Sam Ryder": {
+          "prize": 57918.18,
+          "status": "scored"
+        },
+        "Max Homa": {
+          "prize": 57918.18,
+          "status": "scored"
+        },
+        "Max McGreevy": {
+          "prize": 57918.18,
+          "status": "scored"
+        },
+        "Sam Burns": {
+          "prize": 57918.18,
+          "status": "scored"
+        },
+        "Eric Cole": {
+          "prize": 57918.18,
+          "status": "scored"
+        },
+        "Jordan Smith": {
+          "prize": 57918.18,
+          "status": "scored"
+        },
+        "Matthieu Pavon": {
+          "prize": 57918.18,
+          "status": "scored"
+        },
+        "Johnny Keefer": {
+          "prize": 57918.18,
+          "status": "scored"
+        },
+        "Christiaan Bezuidenhout": {
+          "prize": 39100.0,
+          "status": "scored"
+        },
+        "J.T. Poston": {
+          "prize": 39100.0,
+          "status": "scored"
+        },
+        "Robert MacIntyre": {
+          "prize": 39100.0,
+          "status": "scored"
+        },
+        "Tom Kim": {
+          "prize": 39100.0,
+          "status": "scored"
+        },
+        "Min Woo Lee": {
+          "prize": 39100.0,
+          "status": "scored"
+        },
+        "Joel Dahmen": {
+          "prize": 39100.0,
+          "status": "scored"
+        },
+        "Rafael Campos": {
+          "prize": 25376.67,
+          "status": "scored"
+        },
+        "Matt Kuchar": {
+          "prize": 25376.67,
+          "status": "scored"
+        },
+        "David Lipsky": {
+          "prize": 25376.67,
+          "status": "scored"
+        },
+        "Patrick Rodgers": {
+          "prize": 25376.67,
+          "status": "scored"
+        },
+        "Alex Smalley": {
+          "prize": 25376.67,
+          "status": "scored"
+        },
+        "Keith Mitchell": {
+          "prize": 25376.67,
+          "status": "scored"
+        },
+        "Carson Young": {
+          "prize": 25376.67,
+          "status": "scored"
+        },
+        "Rasmus H\u00f8jgaard": {
+          "prize": 25376.67,
+          "status": "scored"
+        },
+        "Dylan Wu": {
+          "prize": 25376.67,
+          "status": "scored"
+        },
+        "Ryo Hisatsune": {
+          "prize": 25376.67,
+          "status": "scored"
+        },
+        "A.J. Ewart": {
+          "prize": 25376.67,
+          "status": "scored"
+        },
+        "Ricky Castillo": {
+          "prize": 25376.67,
+          "status": "scored"
+        },
+        "Michael Brennan": {
+          "prize": 20884.0,
+          "status": "scored"
+        },
+        "Taylor Moore": {
+          "prize": 20884.0,
+          "status": "scored"
+        },
+        "Denny McCarthy": {
+          "prize": 20884.0,
+          "status": "scored"
+        },
+        "Davis Riley": {
+          "prize": 20884.0,
+          "status": "scored"
+        },
+        "Max Greyserman": {
+          "prize": 20884.0,
+          "status": "scored"
+        },
+        "Daniel Berger": {
+          "prize": 20884.0,
+          "status": "scored"
+        },
+        "John Parry": {
+          "prize": 20884.0,
+          "status": "scored"
+        },
+        "Seamus Power": {
+          "prize": 19688.0,
+          "status": "scored"
+        },
+        "Matt Fitzpatrick": {
+          "prize": 19688.0,
+          "status": "scored"
+        },
+        "Mac Meissner": {
+          "prize": 19688.0,
+          "status": "scored"
+        },
+        "Chandler Phillips": {
+          "prize": 19688.0,
+          "status": "scored"
+        },
+        "Davis Chatfield": {
+          "prize": 19688.0,
+          "status": "scored"
+        },
+        "Chad Ramey": {
+          "prize": 19688.0,
+          "status": "scored"
+        },
+        "Adrien Dumont de Chassart": {
+          "prize": 19044.0,
+          "status": "scored"
+        },
+        "Zach Johnson": {
+          "prize": 18768.0,
+          "status": "scored"
+        },
+        "Adrien Saddier": {
+          "prize": 18768.0,
+          "status": "scored"
+        },
+        "Gary Woodland": {
+          "prize": 18492.0,
+          "status": "scored"
+        },
+        "Zecheng Dou": {
+          "prize": 18308.0,
+          "status": "scored"
+        },
+        "Bryson Dechambeau": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Chris Gotterup": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Sepp Straka": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Tyrell Hatton": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Sami Valimaki": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Lucas Glover": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Cameron Smith": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Chris Kirk": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Luke Clanton": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Jordan Spieth": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Andrew Novak": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Taylor Pendrith": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "J.J. Spaun": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Nicolai H\u00f8jgaard": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Garrick Higgo": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Kristoffer Reitan": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Jon Rahm": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Maverick McNealy": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Patrick Reed": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Kurt Kitayama": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Michael Thorbjornsen": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Brian Harman": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Keegan Bradley": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Marco Penge": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Viktor Hovland": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Hideki Matsuyama": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Sungjae Im": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Ryan Fox": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Xander Schauffele": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Michael Kim": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Akshay Bhatia": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Justin Rose": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Brooks Koepka": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Cameron Young": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Corey Conners": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Neal Shipley": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Aaron Rai": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Rico Hoey": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Rasmus Neergaard-Petersen": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Justin Thomas": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Nico Echavarria": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Jake Knapp": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Joaquin Niemann": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Rory McIlroy": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Tommy Fleetwood": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Ludvig \u00c5berg": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Bud Cauley": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Alex Noren": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Collin Morikawa": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Aldrich Potgieter": {
+          "prize": 0,
+          "status": "not_entered"
+        },
+        "Shane Lowry": {
+          "prize": 0,
+          "status": "not_entered"
+        }
+      }
+    }
+  },
+  "schedule": [],
+  "tournament_order": [
+    "The American Express",
+    "WM Phoenix Open",
+    "AT&T Pebble Beach Pro-Am"
+  ]
+}
