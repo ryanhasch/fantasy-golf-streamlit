@@ -597,9 +597,9 @@ st.sidebar.markdown("---")
 
 # Build page list based on admin status
 if st.session_state.is_admin:
-    page_options = ["🔴 Live Leaderboard", "🏆 Standings", "🗓️ Tournaments", "👥 Teams", "📊 Player Stats", "⚙️ Setup"]
+    page_options = ["🏆 Standings", "🗓️ Tournaments", "👥 Teams", "📊 Player Stats", "🔴 Live Leaderboard","⚙️ Setup"]
 else:
-    page_options = ["🔴 Live Leaderboard", "🏆 Standings", "👥 Teams", "📊 Player Stats"]
+    page_options = ["🏆 Standings", "👥 Teams", "🔴 Live Leaderboard","📊 Player Stats"]
 
 page = st.sidebar.radio("Navigate", page_options)
 
@@ -909,9 +909,10 @@ elif page == "🏆 Standings":
             medal = rank_labels[i] if i < 3 else f"#{i+1}"
             st.markdown(f"""
             <div class="metric-card">
-                <div style="font-size:1.1rem; font-weight:600;">{medal} {team_name}</div>
+                <div style="font-size:1.1rem; font-weight:600; color:black;">{medal} {team_name}</div>
                 <div class="big-number">{fmt_money(info['total'])}</div>
             </div>""", unsafe_allow_html=True)
+
 
     st.markdown("---")
     st.subheader("Full Standings Table")
