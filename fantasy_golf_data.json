@@ -1388,7 +1388,7 @@
         },
         "Brooks Koepka": {
           "prize": 0,
-          "status": "not_entered"
+          "status": "cut"
         },
         "Cameron Young": {
           "prize": 0,
@@ -1440,7 +1440,7 @@
         },
         "Ludvig \u00c5berg": {
           "prize": 0,
-          "status": "cut"
+          "status": "not_entered"
         },
         "Bud Cauley": {
           "prize": 0,

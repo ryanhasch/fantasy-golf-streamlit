@@ -317,6 +317,17 @@ def apply_leaderboard_status(results, leaderboard_status_map):
     return results
 
 
+def _score_to_int(score_str):
+    """Convert ESPN score string ('E', '-10', '+2', '72') to int for sorting."""
+    s = str(score_str).strip()
+    if s in ("E", "e", "EVEN", "even", "0"):
+        return 0
+    try:
+        return int(s)
+    except ValueError:
+        return 9999  # WD/cut/unknown — push to bottom
+
+
 def fetch_espn_leaderboard():
     raw = None
     for url in [ESPN_SCOREBOARD_URL, ESPN_LEADERBOARD_URL]:
@@ -345,21 +356,20 @@ def fetch_espn_leaderboard():
     type_obj = status_obj.get("type", {}) if isinstance(status_obj.get("type"), dict) else {}
     status_detail = type_obj.get("detail", "")
     status_message = f"Round {round_num} - {status_detail}" if round_num else status_detail
+
     players = []
     for c in comp.get("competitors", []):
         if not isinstance(c, dict):
             continue
         athlete = c.get("athlete", {})
         full_name = athlete.get("displayName", "Unknown") if isinstance(athlete, dict) else "Unknown"
-        c_status = c.get("status", {}) if isinstance(c.get("status"), dict) else {}
-        position_obj = c_status.get("position", {})
-        pos_display = position_obj.get("displayName", "") if isinstance(position_obj, dict) else (position_obj if isinstance(position_obj, str) else "")
-        try:
-            pos_int = int(re.sub(r"[^\d]", "", pos_display))
-        except ValueError:
-            pos_int = 999
+
+        # ── Score ──────────────────────────────────────────────────────────
         score_obj = c.get("score", {})
-        score_total = score_obj.get("displayValue", "E") if isinstance(score_obj, dict) else (score_obj if isinstance(score_obj, str) else "E")
+        score_total = (score_obj.get("displayValue", "E") if isinstance(score_obj, dict)
+                       else (score_obj if isinstance(score_obj, str) else "E"))
+
+        # ── Thru ───────────────────────────────────────────────────────────
         linescores = c.get("linescores", [])
         thru_val = ""
         if isinstance(linescores, list) and linescores:
@@ -370,19 +380,91 @@ def fetch_espn_leaderboard():
                     t = period.get("number", "")
                     if t:
                         thru_val = f"Thru {t}"
-        type_obj2 = c_status.get("type", {})
-        espn_status = type_obj2.get("name", "").lower() if isinstance(type_obj2, dict) else (type_obj2.lower() if isinstance(type_obj2, str) else "")
-        players.append({"name": full_name, "position": pos_int, "position_display": pos_display, "score": score_total, "thru": thru_val, "espn_status": espn_status})
-    players.sort(key=lambda x: x["position"])
-    return players, tournament_name, status_message
+
+        # ── Status — check ALL fields ESPN might use ───────────────────────
+        c_status = c.get("status", {}) if isinstance(c.get("status"), dict) else {}
+        type_obj2 = c_status.get("type", {}) if isinstance(c_status.get("type"), dict) else {}
+        # Collect every status string we can find
+        status_strings = []
+        for field in ("name", "shortText", "description", "detail", "state"):
+            val = type_obj2.get(field, "")
+            if val:
+                status_strings.append(str(val).lower())
+        # Also check top-level competitor fields
+        for field in ("statusName", "statusText", "statusShortText"):
+            val = c.get(field, "")
+            if val:
+                status_strings.append(str(val).lower())
+        # Check active flag — False often means cut/WD
+        is_active = c.get("active", True)
+        combined_status = " ".join(status_strings)
+
+        if any(x in combined_status for x in ("wd", "withdraw", "withdrew", "dq", "disqualif")):
+            espn_status = "wd"
+        elif any(x in combined_status for x in ("cut", "mc", "mdf")):
+            espn_status = "cut"
+        elif not is_active and combined_status:
+            # Not active and some non-playing status — treat as cut unless we know otherwise
+            espn_status = "cut"
+        else:
+            espn_status = "active"
+
+        # ── Position from ESPN (often blank — we'll recompute below) ──────
+        position_obj = c_status.get("position", {})
+        pos_display = (position_obj.get("displayName", "") if isinstance(position_obj, dict)
+                       else (position_obj if isinstance(position_obj, str) else ""))
+
+        players.append({
+            "name": full_name,
+            "position": 999,        # placeholder — computed below
+            "position_display": pos_display,
+            "score": score_total,
+            "score_int": _score_to_int(score_total),
+            "thru": thru_val,
+            "espn_status": espn_status,
+        })
+
+    # ── Compute positions from scores (ESPN position field is unreliable) ──
+    # Active players ranked by score; cut/WD pushed to bottom
+    active = [p for p in players if p["espn_status"] == "active"]
+    inactive = [p for p in players if p["espn_status"] != "active"]
+
+    active.sort(key=lambda x: x["score_int"])
+    # Assign positions with tie handling
+    rank = 1
+    for i, p in enumerate(active):
+        if i > 0 and p["score_int"] == active[i-1]["score_int"]:
+            p["position"] = active[i-1]["position"]
+            p["position_display"] = active[i-1]["position_display"]
+        else:
+            p["position"] = rank
+            p["position_display"] = f"T{rank}" if (
+                i + 1 < len(active) and active[i+1]["score_int"] == p["score_int"]
+            ) or (i > 0 and active[i-1]["score_int"] == p["score_int"]) else str(rank)
+        rank += 1
+
+    # Put cut/WD players at bottom with their original ESPN pos_display if available
+    cut_rank = len(active) + 1
+    for p in inactive:
+        p["position"] = cut_rank
+        if not p["position_display"]:
+            p["position_display"] = "CUT" if p["espn_status"] == "cut" else "WD"
+
+    all_players = active + inactive
+    return all_players, tournament_name, status_message
 
 
 def espn_status_to_league_status(espn_status, prize):
-    s = espn_status.lower()
-    if "cut" in s or "mdf" in s:
-        return "cut"
-    if "wd" in s or "withdraw" in s or "dq" in s or "disqualif" in s:
+    """
+    Map the espn_status field (now 'wd', 'cut', or 'active') to league status.
+    Also handles legacy string values from old ESPN parsing.
+    """
+    s = str(espn_status).lower()
+    if s == "wd" or any(x in s for x in ("withdraw", "withdrew", "dq", "disqualif")):
         return "wd"
+    if s == "cut" or any(x in s for x in ("mc", "mdf")):
+        return "cut"
+    # 'active' or anything else — scored if they have prize money
     return "scored"
 
 
@@ -453,10 +535,11 @@ def compute_live_team_standings(data, live_payout, live_players):
     name_to_prize = {}
     for p in live_players:
         espn_st = p.get("espn_status", "")
-        if any(x in espn_st for x in ("cut", "wd", "dq")):
+        pos = p.get("position", 999)
+        if espn_st in ("cut", "wd") or pos == 999:
             name_to_prize[p["name"]] = 0
         else:
-            name_to_prize[p["name"]] = payout.get(int(p["position"]) if p["position"] != 999 else 999, 0.0)
+            name_to_prize[p["name"]] = payout.get(int(pos), 0.0)
     results = []
     for team_name, golfers in data["teams"].items():
         earnings = [(g, name_to_prize[g]) for g in golfers if g in name_to_prize and name_to_prize[g] > 0]
@@ -776,8 +859,8 @@ if page == "🔴 Live Leaderboard":
                                 in_top3 = any(g == t[0] for t in top3)
                                 if p:
                                     espn_st = p.get("espn_status", "")
-                                    if "cut" in espn_st: disp, prize = "✂️ CUT", 0
-                                    elif "wd" in espn_st or "dq" in espn_st: disp, prize = "🚫 WD/DQ", 0
+                                    if espn_st == "cut": disp, prize = "✂️ CUT", 0
+                                    elif espn_st == "wd": disp, prize = "🚫 WD/DQ", 0
                                     else: disp, prize = "🏌️ Playing", st.session_state.live_payout.get(int(p["position"]), 0)
                                     rows.append({"Golfer": g, "Pos": p["position_display"], "Score": p["score"], "Thru": p["thru"], "Status": disp, "Proj. Prize": prize, "Counts": "✅" if in_top3 else ""})
                                 else:
@@ -806,8 +889,8 @@ if page == "🔴 Live Leaderboard":
                 for p in st.session_state.live_players:
                     espn_st = p.get("espn_status", "")
                     pos_int = int(p["position"]) if p["position"] != 999 else 999
-                    if "cut" in espn_st: sd, prize = "✂️ CUT", 0
-                    elif "wd" in espn_st or "dq" in espn_st: sd, prize = "🚫 WD/DQ", 0
+                    if espn_st == "cut": sd, prize = "✂️ CUT", 0
+                    elif espn_st == "wd": sd, prize = "🚫 WD/DQ", 0
                     elif pos_int == 999: sd, prize = "🏌️", 0
                     else:
                         sd = "🏌️"

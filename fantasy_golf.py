@@ -216,79 +216,195 @@ def scrape_pga_results_article(url):
     return players, tourney_name
 
 
+def _extract_tournament_id(url: str) -> str:
+    """
+    Extract the tournament ID from a PGA Tour URL.
+    e.g. .../R2026002/leaderboard -> "R2026002"
+         .../r/R2026002/... -> "R2026002"
+    """
+    # Match R followed by 7 digits (standard PGA Tour event ID format)
+    m = re.search(r'(R\d{7})', url, re.IGNORECASE)
+    if m:
+        return m.group(1).upper()
+    return ""
+
+
 def scrape_pga_leaderboard_status(url: str):
     """
-    Scrape a PGA Tour tournament leaderboard page to get player statuses.
-    URL format: pgatour.com/tournaments/2026/{slug}/{event-id}/leaderboard
-    Returns dict: {player_name: "cut"|"wd"|"active"} for everyone in the field.
-    Players NOT in this dict = not entered.
-    """
-    resp = requests.get(url, headers=HEADERS, timeout=15)
-    resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, "html.parser")
+    Get player statuses (cut / wd / active / not_entered) from a PGA Tour leaderboard.
 
+    Strategy (in order):
+    1. PGA Tour's official data JSON API — statdata.pgatour.com/r/{id}/leaderboard-v2.json
+       Status codes: "A"=active, "C"=cut/MC, "W"=withdrawal, "D"=disqualified
+    2. Alternate data endpoint — pgatour.com/data/r/{id}/leaderboard-v2mini.json
+    3. HTML __NEXT_DATA__ scraping (fallback if APIs are down/changed)
+    4. Raw HTML text search for WD/CUT near player names
+
+    Returns dict: {player_name: "cut"|"wd"|"active"}
+    Players NOT in dict = not entered (DNP).
+    """
     status_map = {}
 
-    # Try embedded JSON first (__NEXT_DATA__ is common in Next.js PGA Tour pages)
-    for script in soup.find_all("script", {"id": "__NEXT_DATA__"}):
+    # ── Attempt 1 & 2: official PGA Tour data JSON endpoints ──────────────
+    tid = _extract_tournament_id(url)
+    api_urls = []
+    if tid:
+        api_urls = [
+            f"https://statdata.pgatour.com/r/{tid}/leaderboard-v2.json",
+            f"https://www.pgatour.com/data/r/{tid}/leaderboard-v2mini.json",
+            f"https://statdata.pgatour.com/r/{tid}/leaderboard-v2mini.json",
+        ]
+
+    for api_url in api_urls:
         try:
-            next_data = json.loads(script.string)
-            # Walk the JSON tree looking for player/competitor arrays
-            def find_players(obj, depth=0):
-                if depth > 12 or not obj:
+            r = requests.get(api_url, headers=HEADERS, timeout=12)
+            if r.status_code != 200:
+                continue
+            lb_data = r.json()
+
+            # Walk the JSON looking for player rows
+            # PGA Tour format: rootNodes[n].rows[m].players[k] or leaderboardRows[n].players[k]
+            # Each player has: firstName, lastName, status ("A","C","W","D","MDF")
+            def walk_leaderboard(obj, depth=0):
+                if depth > 8 or not obj:
                     return
                 if isinstance(obj, list):
                     for item in obj:
-                        find_players(item, depth + 1)
+                        walk_leaderboard(item, depth + 1)
                 elif isinstance(obj, dict):
-                    # Look for objects that have a player name + status
-                    name = (obj.get("displayName") or obj.get("playerName") or
-                            obj.get("fullName") or obj.get("name") or "")
-                    status_raw = (obj.get("status") or obj.get("playerStatus") or
-                                  obj.get("tournamentStatus") or "")
-                    if isinstance(status_raw, dict):
-                        status_raw = status_raw.get("displayText") or status_raw.get("label") or ""
-                    if name and isinstance(name, str) and len(name) > 3:
-                        s = str(status_raw).lower()
-                        if "cut" in s or "mc" in s:
-                            status_map[name] = "cut"
-                        elif any(x in s for x in ("wd", "withdraw", "dq", "disq")):
-                            status_map[name] = "wd"
-                        elif name not in status_map:
-                            status_map[name] = "active"
+                    first = obj.get("firstName", "")
+                    last  = obj.get("lastName", "")
+                    # Also try playerName / displayName
+                    display = obj.get("displayName") or obj.get("playerName") or ""
+                    player_status = obj.get("status", "")
+
+                    # Build the full name
+                    if first and last:
+                        full = f"{first} {last}".strip()
+                    elif display:
+                        full = display.strip()
+                    else:
+                        full = ""
+
+                    if full and len(full) > 3 and player_status:
+                        s = str(player_status).upper().strip()
+                        if s in ("W", "WD") or "WITHDRAW" in s or "WD" in s:
+                            status_map[full] = "wd"
+                        elif s in ("D", "DQ") or "DISQ" in s:
+                            status_map[full] = "wd"  # treat DQ same as WD for our purposes
+                        elif s in ("C", "MC", "CUT", "MDF") or "CUT" in s:
+                            if status_map.get(full) != "wd":
+                                status_map[full] = "cut"
+                        elif s == "A" or "ACTIVE" in s:
+                            if full not in status_map:
+                                status_map[full] = "active"
+
                     for v in obj.values():
                         if isinstance(v, (dict, list)):
-                            find_players(v, depth + 1)
-            find_players(next_data)
+                            walk_leaderboard(v, depth + 1)
+
+            walk_leaderboard(lb_data)
+
+            if status_map:
+                return status_map
         except Exception:
-            pass
-
-    if status_map:
-        return status_map
-
-    # Fallback: parse HTML table rows
-    for table in soup.find_all("table"):
-        rows = table.find_all("tr")
-        if len(rows) < 5:
             continue
-        for row in rows:
-            cells = row.find_all(["td", "th"])
-            if len(cells) < 2:
+
+    # ── Attempt 3: HTML page scraping ─────────────────────────────────────
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, "html.parser")
+        page_text = resp.text
+
+        # 3a: __NEXT_DATA__ JSON blob
+        nd = soup.find("script", {"id": "__NEXT_DATA__"})
+        if nd and nd.string:
+            try:
+                next_data = json.loads(nd.string)
+
+                def find_players_nd(obj, depth=0):
+                    if depth > 15 or not obj:
+                        return
+                    if isinstance(obj, list):
+                        for item in obj:
+                            find_players_nd(item, depth + 1)
+                    elif isinstance(obj, dict):
+                        # Collect name candidates
+                        first = obj.get("firstName", "")
+                        last  = obj.get("lastName", "")
+                        display = (obj.get("displayName") or obj.get("playerName") or
+                                   obj.get("fullName") or "")
+                        if first and last:
+                            full = f"{first} {last}".strip()
+                        elif display and len(display) > 3:
+                            full = display.strip()
+                        else:
+                            full = ""
+
+                        # Collect all status strings in this node
+                        status_strs = []
+                        for key in ("status", "playerStatus", "tournamentStatus",
+                                    "roundStatus", "statusCode", "statusShortText",
+                                    "statusType", "cutSeverity"):
+                            v = obj.get(key, "")
+                            if isinstance(v, dict):
+                                for sub in ("code", "displayText", "shortText", "label", "name", "type"):
+                                    sv = v.get(sub, "")
+                                    if sv:
+                                        status_strs.append(str(sv).upper())
+                            elif v:
+                                status_strs.append(str(v).upper())
+                        combined = " ".join(status_strs)
+
+                        if full:
+                            if any(x in combined for x in ("W", "WD", "WITHDRAW", "WITHDREW")):
+                                # Make sure it's not just "W" matching a word
+                                if re.search(r'\bW\b|WD|WITHDRAW', combined):
+                                    status_map[full] = "wd"
+                            if any(x in combined for x in ("DQ", "DISQ")):
+                                status_map[full] = "wd"
+                            elif any(x in combined for x in ("C", "CUT", "MC", "MDF", "MISSED")):
+                                if re.search(r'\bC\b|\bMC\b|CUT|MDF|MISSED', combined):
+                                    if status_map.get(full) != "wd":
+                                        status_map[full] = "cut"
+                            elif combined and full not in status_map:
+                                status_map[full] = "active"
+
+                        for v in obj.values():
+                            if isinstance(v, (dict, list)):
+                                find_players_nd(v, depth + 1)
+
+                find_players_nd(next_data)
+            except Exception:
+                pass
+
+        if status_map:
+            return status_map
+
+        # 3b: Raw text search — find "WD" and "CUT" near capitalized names
+        # Look for patterns like "Ludvig Aberg ... WD" in the raw page text
+        # This catches any rendering approach
+        name_pattern = re.compile(r"[A-Z][a-z]+(?:\s[A-Z][a-z'\-]+){1,3}")
+        all_names = name_pattern.findall(page_text)
+        for name in set(all_names):
+            if len(name) < 6:
                 continue
-            row_text = " ".join(c.get_text(strip=True) for c in cells)
-            # Find player name — look for cells that look like names (First Last)
-            for cell in cells:
-                text = cell.get_text(strip=True)
-                # Name-like: two words, each capitalized
-                if re.match(r'^[A-Z][a-z]+[ ][A-Z]', text) and len(text) > 5:
-                    row_lower = row_text.lower()
-                    if "cut" in row_lower:
-                        status_map[text] = "cut"
-                    elif any(x in row_lower for x in ("wd", "w/d", "dq")):
-                        status_map[text] = "wd"
-                    else:
-                        status_map.setdefault(text, "active")
+            # Find all occurrences of this name in the text
+            for m in re.finditer(re.escape(name), page_text):
+                window = page_text[m.start():m.start()+150].upper()
+                if re.search(r'\bWD\b|WITHDREW|WITHDRAWAL', window):
+                    status_map[name] = "wd"
                     break
+                elif re.search(r'\bCUT\b|\bMC\b|MISSED CUT', window):
+                    if status_map.get(name) != "wd":
+                        status_map[name] = "cut"
+                    break
+                else:
+                    status_map.setdefault(name, "active")
+
+    except Exception:
+        pass
 
     return status_map
 
@@ -318,14 +434,20 @@ def apply_leaderboard_status(results, leaderboard_status_map):
 
 
 def _score_to_int(score_str):
-    """Convert ESPN score string ('E', '-10', '+2', '72') to int for sorting."""
-    s = str(score_str).strip()
-    if s in ("E", "e", "EVEN", "even", "0"):
+    """Convert ESPN score string ('E', '-10', '+2', '72') to int for sorting.
+    Lower = better (golf). 'E'/even = 0. Unparseable = 9999 (worst).
+    """
+    if score_str is None:
+        return 9999
+    s = str(score_str).strip().upper()
+    if s in ("E", "EVEN", "PAR", "0", "-", "--"):
         return 0
+    # Strip leading + sign so int('+2') works
+    s = s.lstrip("+")
     try:
         return int(s)
     except ValueError:
-        return 9999  # WD/cut/unknown — push to bottom
+        return 9999  # WD/cut/unknown -- push to bottom
 
 
 def fetch_espn_leaderboard():
@@ -529,6 +651,24 @@ def compute_earnings_history(data):
             history[team_name].append({"tournament": t_name, "cumulative": cumulative[team_name], "rank": ranks[team_name]})
     return history
 
+def compute_tied_prize(pos, payout, live_players):
+    """
+    Golf tie rule: players tied at position P share the purse for positions
+    P through P+(n_tied-1), divided equally among them.
+    E.g. 3 players tied for 5th split prizes for 5th+6th+7th equally.
+    """
+    if pos <= 0 or pos == 999:
+        return 0.0
+    # Count how many active players are at this exact position
+    n_tied = sum(1 for p in live_players if p.get("position") == pos
+                 and p.get("espn_status") == "active")
+    if n_tied <= 1:
+        return float(payout.get(pos, 0))
+    # Sum prizes for pos through pos+n_tied-1
+    total_pool = sum(payout.get(p, 0) for p in range(pos, pos + n_tied))
+    return round(total_pool / n_tied, 2)
+
+
 def compute_live_team_standings(data, live_payout, live_players):
     # Ensure payout keys are int for consistent lookup
     payout = {int(k): v for k, v in live_payout.items()}
@@ -539,7 +679,8 @@ def compute_live_team_standings(data, live_payout, live_players):
         if espn_st in ("cut", "wd") or pos == 999:
             name_to_prize[p["name"]] = 0
         else:
-            name_to_prize[p["name"]] = payout.get(int(pos), 0.0)
+            # Use split-prize for ties
+            name_to_prize[p["name"]] = compute_tied_prize(int(pos), payout, live_players)
     results = []
     for team_name, golfers in data["teams"].items():
         earnings = [(g, name_to_prize[g]) for g in golfers if g in name_to_prize and name_to_prize[g] > 0]
@@ -861,7 +1002,10 @@ if page == "🔴 Live Leaderboard":
                                     espn_st = p.get("espn_status", "")
                                     if espn_st == "cut": disp, prize = "✂️ CUT", 0
                                     elif espn_st == "wd": disp, prize = "🚫 WD/DQ", 0
-                                    else: disp, prize = "🏌️ Playing", st.session_state.live_payout.get(int(p["position"]), 0)
+                                    else:
+                                        disp = "🏌️ Playing"
+                                        _pay = {int(k): v for k, v in st.session_state.live_payout.items()}
+                                        prize = compute_tied_prize(int(p["position"]), _pay, st.session_state.live_players)
                                     rows.append({"Golfer": g, "Pos": p["position_display"], "Score": p["score"], "Thru": p["thru"], "Status": disp, "Proj. Prize": prize, "Counts": "✅" if in_top3 else ""})
                                 else:
                                     rows.append({"Golfer": g, "Pos": "—", "Score": "—", "Thru": "—", "Status": "Not in field", "Proj. Prize": 0, "Counts": ""})
@@ -894,7 +1038,7 @@ if page == "🔴 Live Leaderboard":
                     elif pos_int == 999: sd, prize = "🏌️", 0
                     else:
                         sd = "🏌️"
-                        prize = payout.get(pos_int, 0)
+                        prize = compute_tied_prize(pos_int, payout, st.session_state.live_players)
                     lb_rows.append({"⭐": "⭐" if p["name"] in all_team_golfers else "", "Pos": p["position_display"], "Player": p["name"], "Score": p["score"], "Thru": p["thru"], "Status": sd, "Proj. Prize": prize})
                 st.dataframe(pd.DataFrame(lb_rows).style.format({"Proj. Prize": fmt_money}), width="stretch", hide_index=True)
                 st.caption("⭐ = on a league team")
@@ -1330,8 +1474,8 @@ elif page == "📊 Player Stats":
                 st.metric(top["Golfer"], fmt_money(top["Total Prize"]), f"({top['Team']})")
             with c3:
                 top = full_df.sort_values("Cuts", ascending=False).iloc[0]
-                st.markdown("**Most Cuts Made (bad)**")
-                st.metric(top["Golfer"], f"{int(top['Cuts'])} cuts", f"({top['Team']})")
+                st.markdown("**Most Cuts**")
+                st.metric(top["Golfer"], f"{int(top['Cuts'])}", f"({top['Team']})")
 
     with tab_unowned:
         st.subheader("🆓 Best Unowned Golfers This Season")
