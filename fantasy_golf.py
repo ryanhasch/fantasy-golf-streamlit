@@ -12,6 +12,7 @@ Results storage format per golfer:
   { "prize": 0,       "status": "unknown_absent" }  <- needs admin review
 """
 
+import unicodedata
 import streamlit as st
 import json
 import os
@@ -409,26 +410,46 @@ def scrape_pga_leaderboard_status(url: str):
     return status_map
 
 
+def _normalize_name(name):
+    """Lowercase, strip accents, collapse whitespace — for fuzzy name matching."""
+    nfkd = unicodedata.normalize("NFKD", str(name))
+    ascii_str = "".join(c for c in nfkd if not unicodedata.combining(c))
+    return " ".join(ascii_str.lower().split())
+
+
 def apply_leaderboard_status(results, leaderboard_status_map):
     """
     For any result entry with status 'unknown_absent', look it up in the
     leaderboard status map and set the correct status.
+    Uses fuzzy name matching (accent-stripped, lowercased) so e.g.
+    "Ludvig Aberg" matches "Ludvig Åberg" from the API.
     Players not found in the leaderboard at all = not_entered.
     Returns updated results dict.
     """
+    # Build normalised lookup once — WD always wins if a name appears twice
+    norm_map = {}
+    for api_name, api_status in leaderboard_status_map.items():
+        key = _normalize_name(api_name)
+        # WD/wd must never be overwritten
+        existing = norm_map.get(key)
+        if existing == "wd":
+            continue
+        if api_status == "wd" or existing is None:
+            norm_map[key] = api_status
+
     for golfer, entry in results.items():
         if not isinstance(entry, dict) or entry.get("status") != "unknown_absent":
             continue
-        lb_status = leaderboard_status_map.get(golfer)
-        if lb_status == "cut":
-            entry["status"] = "cut"
-        elif lb_status == "wd":
+        lb_status = norm_map.get(_normalize_name(golfer))
+        if lb_status == "wd":
             entry["status"] = "wd"
+        elif lb_status == "cut":
+            entry["status"] = "cut"
         elif lb_status == "active":
-            # They played but earned $0 — treat as cut (made field, didn't cash)
+            # In field but $0 — missed cut
             entry["status"] = "cut"
         else:
-            # Not in leaderboard at all = DNP / not entered
+            # Not found in leaderboard = not entered
             entry["status"] = "not_entered"
     return results
 
@@ -1029,6 +1050,9 @@ if page == "🔴 Live Leaderboard":
                 else:
                     st.warning("No payout table loaded — proj. prizes will show $0. Go to Step 1 above to load the purse breakdown.")
 
+                # Build player→team lookup once
+                player_team = {g: t for t, gs in data["teams"].items() for g in gs}
+
                 lb_rows = []
                 for p in st.session_state.live_players:
                     espn_st = p.get("espn_status", "")
@@ -1039,9 +1063,9 @@ if page == "🔴 Live Leaderboard":
                     else:
                         sd = "🏌️"
                         prize = compute_tied_prize(pos_int, payout, st.session_state.live_players)
-                    lb_rows.append({"⭐": "⭐" if p["name"] in all_team_golfers else "", "Pos": p["position_display"], "Player": p["name"], "Score": p["score"], "Thru": p["thru"], "Status": sd, "Proj. Prize": prize})
+                    team_name = player_team.get(p["name"], "")
+                    lb_rows.append({"Pos": p["position_display"], "Player": p["name"], "Team": team_name, "Score": p["score"], "Thru": p["thru"], "Status": sd, "Proj. Prize": prize})
                 st.dataframe(pd.DataFrame(lb_rows).style.format({"Proj. Prize": fmt_money}), width="stretch", hide_index=True)
-                st.caption("⭐ = on a league team")
 
                 # Show diagnostic if all prizes are 0 but there are active players
                 active_with_prize = sum(1 for r in lb_rows if r["Proj. Prize"] > 0)
@@ -1174,7 +1198,7 @@ elif page == "🏆 Standings":
                 paper_bgcolor="#ffffff",
                 hovermode="x unified",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
 
         except ImportError:
             st.info("Install plotly: `uv add plotly`")
@@ -1261,9 +1285,14 @@ elif page == "🗓️ Tournaments":
                         if auto_classify and lb_url:
                             with st.spinner("Scraping leaderboard..."):
                                 try:
+                                    tid = _extract_tournament_id(lb_url)
                                     lb_status = scrape_pga_leaderboard_status(lb_url)
                                     if not lb_status:
-                                        st.error("Couldn't extract player statuses from that page. Check the URL and try manual classification below.")
+                                        st.error(
+                                            f"Couldn't extract player statuses. "
+                                            + (f"Tournament ID found: **{tid}**. " if tid else "**No tournament ID found in URL** (expected format: .../R2026002/leaderboard). ")
+                                            + "Try the exact URL from the leaderboard page, e.g. `pgatour.com/tournaments/2026/the-american-express/R2026002/leaderboard`"
+                                        )
                                     else:
                                         updated_results = apply_leaderboard_status(dict(results), lb_status)
                                         data["tournaments"][selected_t]["results"] = updated_results
@@ -1314,63 +1343,78 @@ elif page == "🗓️ Tournaments":
             if results:
                 st.markdown("---")
                 st.subheader("All Golfer Results")
-                res_rows = sorted([{
-                    "Golfer": g, "Team": next((t for t, gs in data["teams"].items() if g in gs), "?"),
-                    "Status": STATUS_EMOJI.get(get_status(results.get(g, {})), get_status(results.get(g, {}))),
-                    "Prize": get_prize(results.get(g, {})),
-                } for g in all_golfers_in_league], key=lambda x: x["Prize"], reverse=True)
-                st.dataframe(pd.DataFrame(res_rows).style.format({"Prize": fmt_money}), width="stretch", hide_index=True)
 
-            # ── Re-classify tool (always available to admins) ──────────────
-            if st.session_state.is_admin:
-                st.markdown("---")
-                with st.expander("🔗 Re-classify players using PGA Tour leaderboard"):
-                    st.markdown(
-                        "Use this to auto-set the correct status (cut / WD / not entered) for any "
-                        "player in this tournament with $0 prize money. Works on both old and new imports.\n\n"
-                        "**URL format:** `pgatour.com/tournaments/2026/{tournament-name}/{event-id}/leaderboard`"
+                # Split into scoring (prize > 0) and non-scoring ($0) players
+                scoring = sorted(
+                    [g for g in all_golfers_in_league if get_prize(results.get(g, {})) > 0],
+                    key=lambda g: get_prize(results.get(g, {})), reverse=True
+                )
+                non_scoring = [g for g in all_golfers_in_league if get_prize(results.get(g, {})) == 0]
+
+                # Scoring players — read-only table
+                if scoring:
+                    score_rows = [{
+                        "Golfer": g,
+                        "Team": next((t for t, gs in data["teams"].items() if g in gs), "?"),
+                        "Status": STATUS_EMOJI.get(get_status(results.get(g, {})), ""),
+                        "Prize": get_prize(results.get(g, {})),
+                    } for g in scoring]
+                    st.dataframe(
+                        pd.DataFrame(score_rows).style.format({"Prize": fmt_money}),
+                        width="stretch", hide_index=True
                     )
-                    lb_url_col, lb_btn_col = st.columns([4, 1])
-                    with lb_url_col:
-                        lb_url_t = st.text_input(
-                            "Leaderboard URL",
-                            key=f"lb_url_any_{selected_t}",
-                            label_visibility="collapsed",
-                            placeholder="https://www.pgatour.com/tournaments/2026/the-american-express/R2026002/leaderboard"
-                        )
-                    with lb_btn_col:
-                        do_reclassify = st.button("Apply", type="primary", key=f"lb_apply_{selected_t}")
 
-                    if do_reclassify and lb_url_t:
-                        with st.spinner("Scraping leaderboard..."):
-                            try:
-                                lb_status = scrape_pga_leaderboard_status(lb_url_t)
-                                if not lb_status:
-                                    st.error("Couldn't extract player statuses from that page. Check the URL.")
-                                else:
-                                    # Convert ALL $0-prize league golfers to unknown_absent first, then re-classify
-                                    refreshed = dict(results)
-                                    for g in all_golfers_in_league:
-                                        entry = refreshed.get(g, {"prize": 0, "status": "not_entered"})
-                                        if get_prize(entry) == 0:
-                                            refreshed[g] = {"prize": 0, "status": "unknown_absent"}
+                # $0 players — inline editable status (admin) or read-only (non-admin)
+                if non_scoring:
+                    st.markdown(f"**$0 players ({len(non_scoring)})** — " +
+                                ("change any status that's wrong and hit Save." if st.session_state.is_admin else ""))
 
-                                    refreshed = apply_leaderboard_status(refreshed, lb_status)
-                                    data["tournaments"][selected_t]["results"] = refreshed
+                    STATUS_OPTIONS = ["cut", "wd", "not_entered", "unknown_absent"]
+                    STATUS_LABELS  = {"cut": "✂️ Cut", "wd": "🚫 WD/DQ",
+                                      "not_entered": "— Not entered", "unknown_absent": "❓ Unknown"}
+
+                    if st.session_state.is_admin:
+                        with st.form(f"inline_status_{selected_t}"):
+                            updated_statuses = {}
+                            cols_per_row = 3
+                            for i in range(0, len(non_scoring), cols_per_row):
+                                row_cols = st.columns(cols_per_row)
+                                for j, g in enumerate(non_scoring[i:i + cols_per_row]):
+                                    team = next((t for t, gs in data["teams"].items() if g in gs), "?")
+                                    cur = get_status(results.get(g, {}))
+                                    cur_idx = STATUS_OPTIONS.index(cur) if cur in STATUS_OPTIONS else 0
+                                    with row_cols[j]:
+                                        st.markdown(f"**{g}** · _{team}_")
+                                        updated_statuses[g] = st.selectbox(
+                                            g, STATUS_OPTIONS,
+                                            index=cur_idx,
+                                            format_func=lambda s: STATUS_LABELS.get(s, s),
+                                            key=f"inline_{selected_t}_{g}",
+                                            label_visibility="collapsed",
+                                        )
+                            if st.form_submit_button("💾 Save status changes", type="primary"):
+                                changed = 0
+                                for g, new_status in updated_statuses.items():
+                                    old_status = get_status(results.get(g, {}))
+                                    if new_status != old_status:
+                                        results[g] = {"prize": 0, "status": new_status}
+                                        changed += 1
+                                if changed:
+                                    data["tournaments"][selected_t]["results"] = results
                                     save_data(data)
-
-                                    newly_cut = sum(1 for g in all_golfers_in_league if refreshed.get(g, {}).get("status") == "cut")
-                                    newly_wd  = sum(1 for g in all_golfers_in_league if refreshed.get(g, {}).get("status") == "wd")
-                                    newly_dnp = sum(1 for g in all_golfers_in_league if refreshed.get(g, {}).get("status") == "not_entered")
-                                    still_unk = sum(1 for g in all_golfers_in_league if refreshed.get(g, {}).get("status") == "unknown_absent")
-                                    st.success(
-                                        f"Re-classified {len(all_golfers_in_league)} players: "
-                                        f"{newly_cut} cut · {newly_wd} WD/DQ · {newly_dnp} not entered"
-                                        + (f" · ⚠️ {still_unk} still unknown (name mismatch?)" if still_unk else "")
-                                    )
+                                    st.success(f"Saved {changed} change(s).")
                                     st.rerun()
-                            except Exception as e:
-                                st.error(f"Failed: {e}")
+                                else:
+                                    st.info("No changes to save.")
+                    else:
+                        # Read-only view for non-admins
+                        ro_rows = [{
+                            "Golfer": g,
+                            "Team": next((t for t, gs in data["teams"].items() if g in gs), "?"),
+                            "Status": STATUS_LABELS.get(get_status(results.get(g, {})),
+                                                        get_status(results.get(g, {}))),
+                        } for g in non_scoring]
+                        st.dataframe(pd.DataFrame(ro_rows), width="stretch", hide_index=True)
 
 
 elif page == "👥 Teams":
